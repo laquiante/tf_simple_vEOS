@@ -1,7 +1,9 @@
 # main.tf
+#
 # Dipl.-Ing. Andreas la Quiante
 # Hamburg, 16-FEB-2018
-# simplification for Round-Table
+#
+# simplification for Round-Table Munich
 # 20-JUN-2018
 
 terraform {
@@ -538,6 +540,7 @@ resource "aws_instance" "router-01" {
   instance_type = "t2.medium"
 
   #  instance_type = "c4.xlarge"
+
   key_name                    = "TEST-18-NOV"
   availability_zone           = "eu-central-1a"
   subnet_id                   = "${aws_subnet.subnet-11.id}"
@@ -585,6 +588,7 @@ resource "aws_instance" "router-02" {
   instance_type = "t2.medium"
 
   #  instance_type = "c4.xlarge"
+
   key_name                    = "TEST-18-NOV"
   availability_zone           = "eu-central-1a"
   subnet_id                   = "${aws_subnet.subnet-21.id}"
@@ -623,12 +627,4 @@ resource "aws_network_interface" "eth-22" {
 #  }
 #}
 
-data "terraform_remote_state" "vEOS-Router" {
-  backend = "s3"
-
-  config {
-    bucket = "alq-s3-terraform"
-    key    = "alq-01/terraform.tfstate"
-    region = "eu-central-1"
-  }
-}
+# merge S3-State-Bucket
