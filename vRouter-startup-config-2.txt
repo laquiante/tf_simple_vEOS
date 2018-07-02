@@ -1,0 +1,71 @@
+%EOS-STARTUP-CONFIG-START%
+!
+hostname vEOS-Router-02
+!
+vrf definition Tenant-01
+rd 65512:1001
+!
+vrf definition Tenant-02
+rd 65512:2001
+!
+interface ethernet1
+mtu 9000
+no switchport
+ip address 10.2.1.8/24
+!
+interface ethernet2
+mtu 9000
+!shutdown
+no switchport
+vrf forwarding Tenant-01
+ip address 10.2.2.8/24
+!
+interface ethernet3
+mtu 9000
+!shutdown
+no switchport
+vrf forwarding Tenant-02
+ip address 10.2.3.8/24
+!
+interface tunnel 1
+mtu 9000
+vrf forwarding Tenant-01
+ip address 10.0.0.2/30
+tunnel source 10.2.1.8
+tunnel destination 10.1.1.8
+tunnel key 12
+!
+interface tunnel 2
+mtu 9000
+vrf forwarding Tenant-02
+ip address 10.0.0.6/30
+tunnel source 10.2.1.8
+tunnel destination 10.1.1.8
+tunnel key 21
+
+!
+ip route 0.0.0.0/0 10.2.1.1
+!
+ip routing
+!
+ip routing vrf Tenant-01
+ip routing vrf Tenant-02
+!
+router bgp 65502
+!
+vrf Tenant-01
+neighbor 10.0.0.1
+neighbor 10.0.0.1 remote-as 65501
+redistribute connected
+redistribute static
+!
+vrf Tenant-02
+neighbor 10.0.0.5
+neighbor 10.0.0.5 remote-as 65501
+redistribute connected
+redistribute static
+!
+management api http-commands
+no shutdown
+
+%EOS-STARTUP-CONFIG-END%
